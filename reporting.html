@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Reporting Vicidial — Import • Historique • Filtres • Stats • Export Excel</title>
+
+<style>
+  :root{
+    --bg:#f4f7ff; --card:#fff; --text:#0b1220; --muted:rgba(11,18,32,.62);
+    --stroke:rgba(15,23,42,.12); --shadow:0 18px 60px rgba(0,0,0,.08);
+    --blue:#0b57d0; --green:#16a34a; --orange:#f59e0b; --red:#ef4444;
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--text);
+    background:linear-gradient(180deg,#ffffff 0%, var(--bg) 42%, #ffffff 100%);
+  }
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--stroke);
+  }
+  .topbar{
+    max-width:1500px; margin:0 auto; padding:12px 14px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:10px}
+  .logo{
+    width:48px; height:40px; border-radius:14px; background:#fff; border:1px solid var(--stroke);
+    display:grid; place-items:center; font-weight:950; color:var(--blue);
+    box-shadow:0 10px 25px rgba(11,87,208,.10);
+    user-select:none;
+  }
+  .title{line-height:1.1}
+  .title b{display:block; font-size:15px}
+  .title span{display:block; font-size:12px; color:var(--muted)}
+  .pill{
+    font-size:12px; font-weight:950;
+    padding:8px 10px; border-radius:999px;
+    background:rgba(11,87,208,.08);
+    border:1px solid rgba(11,87,208,.16);
+    color:#06337a; white-space:nowrap;
+  }
+  .wrap{max-width:1500px; margin:0 auto; padding:14px 14px 110px}
+  .card{
+    background:rgba(255,255,255,.96);
+    border:1px solid var(--stroke);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    padding:14px;
+    margin-bottom:12px;
+  }
+  .btn{
+    border:0; border-radius:14px; padding:10px 12px;
+    font-weight:950; cursor:pointer; transition:.12s ease;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    user-select:none; text-decoration:none;
+  }
+  .btn:active{transform:scale(.99)}
+  .btn.primary{background:linear-gradient(135deg,var(--blue),#2f7bff); color:#fff; box-shadow:0 14px 32px rgba(11,87,208,.18)}
+  .btn.ghost{background:#fff; border:1px solid var(--stroke); color:var(--text)}
+  .btn.green{background:linear-gradient(135deg,var(--green),#34d399); color:#03170a}
+  .btn.warn{background:linear-gradient(135deg,var(--orange),#ffd27a); color:#2a1800}
+  .btn.danger{background:linear-gradient(135deg,var(--red),#fb7185); color:#fff}
+  .btn.small{padding:9px 10px; border-radius:12px; font-size:13px}
+  .btn:disabled{opacity:.55; cursor:not-allowed}
+  .input, select, textarea{
+    width:100%; padding:12px 12px; border-radius:14px; border:1px solid var(--stroke);
+    background:#fff; outline:none; font-size:14px;
+    box-shadow:0 10px 22px rgba(0,0,0,.04);
+  }
+  label{font-size:12px; color:var(--muted); display:block; margin:10px 0 6px}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .three{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+  .four{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px}
+  @media (max-width:1100px){ .four{grid-template-columns:1fr 1fr} }
+  @media (max-width:760px){ .three,.two,.four{grid-template-columns:1fr} }
+  .divider{height:1px; background:rgba(15,23,42,.10); margin:12px 0}
+  .hint{font-size:12px; color:var(--muted)}
+  .muted{color:var(--muted)}
+  .tableWrap{
+    border:1px solid var(--stroke);
+    border-radius:14px;
+    overflow:auto;
+    max-height:60vh;
+    background:#fff;
+  }
+  table{width:100%; border-collapse:separate; border-spacing:0}
+  th,td{border-bottom:1px solid var(--stroke); padding:10px 8px; font-size:12px; vertical-align:top; white-space:nowrap}
+  th{position:sticky; top:0; background:#f3f7ff; z-index:1; text-align:left; color:#0b1f4a}
+  tr:hover td{background:#fbfdff}
+  .statGrid{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px}
+  @media (max-width:1100px){ .statGrid{grid-template-columns:1fr 1fr} }
+  .statBox{
+    border:1px solid var(--stroke); border-radius:14px; padding:12px;
+    background:linear-gradient(180deg,#fff, rgba(11,87,208,.03));
+  }
+  .big{font-size:22px; font-weight:950; margin-top:6px}
+  .miniList{font-size:12px}
+  .miniList div{display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dashed rgba(15,23,42,.12)}
+  .miniList div:last-child{border-bottom:0}
+  .toast{
+    position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+    background:rgba(11,18,32,.92); border:1px solid rgba(255,255,255,.16);
+    color:#fff; padding:10px 12px; border-radius:14px;
+    font-size:13px; font-weight:950; z-index:999; display:none; max-width:92vw;
+  }
+  .rowBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 10px; border-radius:999px;
+    border:1px solid var(--stroke); background:#fff;
+    font-weight:950; font-size:12px;
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="title">
+        <b>Reporting Vicidial — Complet</b>
+        <span>Import TXT/CSV • Historique imports • Filtres • Stats • Export Excel (Tout / Filtré / Par import)</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end">
+      <span id="pillRole" class="pill">Rôle: …</span>
+      <span id="pillAll" class="pill">Total base: 0</span>
+      <button id="btnExportAllTop" class="btn ghost small"> Export tout</button>
+      <button id="btnExportFilteredTop" class="btn primary small"> Export filtré</button>
+      <button id="btnHome" class="btn ghost small" onclick="location.href='index.html'"> Accueil</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- STATS TOP -->
+  <section class="card">
+    <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <b style="font-weight:950"> Statistiques (sur le jeu filtré)</b>
+        <div class="hint">RDV = <b>SALES</b> uniquement.</div>
+      </div>
+      <div class="rowBtns">
+        <span class="chip">RDV = <b>SALES</b></span>
+      </div>
+    </div>
+
+    <div class="statGrid" style="margin-top:10px">
+      <div class="statBox"><div class="muted">Appels (lignes)</div><div id="statCalls" class="big">0</div></div>
+      <div class="statBox"><div class="muted">Total SALES (RDV)</div><div id="statSales" class="big">0</div></div>
+      <div class="statBox"><div class="muted">Agents distincts</div><div id="statAgents" class="big">0</div></div>
+      <div class="statBox"><div class="muted">Durée totale (sec)</div><div id="statDur" class="big">0</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="three">
+      <div>
+        <label>Pivot par agent (Total / SALES)</label>
+        <div id="pivotAgent" class="miniList"><div class="muted">Aucune donnée.</div></div>
+      </div>
+      <div>
+        <label>Pivot par statut</label>
+        <div id="pivotStatus" class="miniList"><div class="muted">Aucune donnée.</div></div>
+      </div>
+      <div>
+        <label>SALES par jour</label>
+        <div id="pivotSalesDay" class="miniList"><div class="muted">Aucune donnée.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPORT -->
+  <section class="card">
+    <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <b style="font-weight:950">1) Import Vicidial</b>
+        <div class="hint">Fichiers acceptés: <b>TXT</b> / <b>CSV</b> (détection auto TAB, ;, ,). Import direct (pas de mapping manuel).</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="fileInput" type="file" class="input" style="min-width:260px" accept=".txt,.csv,.tsv,text/plain,text/csv" />
+        <button id="btnImport" class="btn green"> Valider l’import</button>
+      </div>
+    </div>
+    <div id="importMsg" class="hint" style="margin-top:10px"></div>
+
+    <div class="divider"></div>
+
+    <b style="font-weight:950">Historique des imports</b>
+    <div class="hint" style="margin-top:6px">Chaque import a: export + (admin) supprimer l’import (supprime aussi les lignes liées).</div>
+    <div id="importsList" class="card" style="margin-top:10px"></div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="card">
+    <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <b style="font-weight:950">2) Filtres reporting</b>
+        <div class="hint">Sélectionner une plage de dates “de … à …”, filtrer agent, statut, rechercher, puis exporter le jeu filtré.</div>
+      </div>
+      <div class="rowBtns">
+        <button id="btnApply" class="btn primary small">Appliquer</button>
+        <button id="btnReset" class="btn ghost small">Réinitialiser</button>
+        <button id="btnExportFiltered" class="btn ghost small"> Export filtré</button>
+      </div>
+    </div>
+
+    <div class="four" style="margin-top:10px">
+      <div>
+        <label>Date début</label>
+        <input id="dateFrom" class="input" type="date">
+      </div>
+      <div>
+        <label>Date fin</label>
+        <input id="dateTo" class="input" type="date">
+      </div>
+      <div>
+        <label>Agent</label>
+        <select id="fAgent" class="input"><option value="">Tous</option></select>
+      </div>
+      <div>
+        <label>Statut</label>
+        <select id="fStatus" class="input"><option value="">Tous</option></select>
+      </div>
+    </div>
+
+    <div class="two">
+      <div>
+        <label>Recherche</label>
+        <input id="q" class="input" placeholder="Nom, prénom, téléphone, commentaire, recording..." />
+      </div>
+      <div>
+        <label>Affichage</label>
+        <select id="limit" class="input">
+          <option value="200" selected>200 lignes</option>
+          <option value="500">500 lignes</option>
+          <option value="1000">1000 lignes</option>
+          <option value="999999">Tout</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section class="card">
+    <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+      <div>
+        <b style="font-weight:950">3) Tableau intégral (jeu filtré)</b>
+        <div class="hint">Export filtré = exactement les mêmes colonnes que ce tableau.</div>
+      </div>
+      <div class="rowBtns">
+        <button id="btnExportTable" class="btn ghost small"> Export (table)</button>
+      </div>
+    </div>
+
+    <div class="tableWrap" style="margin-top:10px">
+      <table>
+        <thead>
+          <tr>
+            <th>Call date</th>
+            <th>Agent</th>
+            <th>Status</th>
+            <th>Status name</th>
+            <th>Phone</th>
+            <th>First</th>
+            <th>Last</th>
+            <th>Length (sec)</th>
+            <th>Recording</th>
+            <th>Comments</th>
+            <th>Source file</th>
+            <th>Import ID</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="13" class="muted">Aucune donnée.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+/* ==============================
+   FIREBASE (même projet)
+============================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDoc, addDoc, setDoc,
+  onSnapshot, query, orderBy, where, getDocs,
+  writeBatch, deleteDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-G8P5NokxI6ZaIOMroQrH4x8mp_Q2dgg",
+  authDomain: "axokit-crm-ecoles-e56ab.firebaseapp.com",
+  projectId: "axokit-crm-ecoles-e56ab",
+  storageBucket: "axokit-crm-ecoles-e56ab.firebasestorage.app",
+  messagingSenderId: "832744598173",
+  appId: "1:832744598173:web:ee8a39ac6099f987e64274"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* ==============================
+   STATE
+============================== */
+const CALLS_COL = "vicidial_calls";
+const IMPORTS_COL = "vicidial_imports";
+const SALES_CODE = "SALE";
+
+let ALL = [];           // toutes les lignes en base
+let FILTERED = [];      // lignes filtrées
+let IMPORTS = [];       // historique imports
+
+let USER_ROLE = "GUEST";
+let USER_UID = null;
+
+/* ==============================
+   HELPERS
+============================== */
+function $(id){ return document.getElementById(id); }
+function toast(msg){
+  const t=$("toast");
+  t.textContent=msg;
+  t.style.display="block";
+  clearTimeout(t._to);
+  t._to=setTimeout(()=>t.style.display="none", 2200);
+}
+function norm(v){
+  return (v==null ? "" : (""+v))
+    .replace(/\u00a0/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+function esc(s){
+  s = (s==null? "" : ""+s);
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function detectSep(line){
+  if(line.includes("\t")) return "\t";
+  if(line.includes("|")) return "|";
+  if(line.includes(";")) return ";";
+  return ",";
+}
+function parseDateSafe(s){
+  s = norm(s);
+  if(!s) return null;
+  const iso = s.includes("T") ? s : s.replace(" ", "T");
+  const d = new Date(iso);
+  if(!isNaN(d.getTime())) return d;
+  const s2 = s.replace(/\//g,"-").replace(" ", "T");
+  const d2 = new Date(s2);
+  if(!isNaN(d2.getTime())) return d2;
+  return null;
+}
+function dayKey(call_date){
+  const d = parseDateSafe(call_date);
+  if(!d) return "";
+  const y=d.getFullYear();
+  const m=("0"+(d.getMonth()+1)).slice(-2);
+  const da=("0"+d.getDate()).slice(-2);
+  return `${y}-${m}-${da}`;
+}
+function containsAny(hay, needles){
+  const x = (hay||"").toLowerCase();
+  return needles.some(n=>x.includes(n));
+}
+function csvText(rows, headers){
+  const S=";";
+  let out = headers.join(S) + "\n";
+  for(const r of rows){
+    out += headers.map(h=>{
+      let v = r[h]==null ? "" : ""+r[h];
+      v = v.replace(/"/g,'""');
+      return `"${v}"`;
+    }).join(S) + "\n";
+  }
+  return out;
+}
+function downloadText(filename, text){
+  const blob = new Blob([text], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 300);
+}
+
+/* ==============================
+   DEFAULT DATES
+============================== */
+(function initDates(){
+  const today = new Date();
+  const y=today.getFullYear();
+  const m=("0"+(today.getMonth()+1)).slice(-2);
+  const d=("0"+today.getDate()).slice(-2);
+  const iso = `${y}-${m}-${d}`;
+  $("dateFrom").value = iso;
+  $("dateTo").value = iso;
+})();
+
+/* ==============================
+   AUTH ROLE (pas de blocage page)
+   -> juste pour "Supprimer"
+============================== */
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    USER_UID = user.uid;
+    // rôle via /users/{uid}.role si existe
+    try{
+      const u = await getDoc(doc(db,"users",user.uid));
+      USER_ROLE = u.exists() ? (u.data()?.role || "USER") : "USER";
+    }catch(e){
+      USER_ROLE = "USER";
+    }
+  } else {
+    USER_UID = null;
+    USER_ROLE = "GUEST";
+  }
+  $("pillRole").textContent = `Rôle: ${USER_ROLE}`;
+  renderImports();
+  renderTable(); // refresh to update action buttons
+});
+
+/* ==============================
+   LIVE LOAD CALLS
+============================== */
+onSnapshot(query(collection(db, CALLS_COL), orderBy("createdAt", "desc")), (snap)=>{
+  ALL = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  $("pillAll").textContent = `Total base: ${ALL.length}`;
+  buildFilterLists();
+  applyFilters();
+});
+
+/* ==============================
+   LIVE LOAD IMPORTS
+============================== */
+onSnapshot(query(collection(db, IMPORTS_COL), orderBy("importedAt","desc")), (snap)=>{
+  IMPORTS = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  renderImports();
+});
+
+/* ==============================
+   BUILD FILTER LISTS
+============================== */
+function buildFilterLists(){
+  const aSet = new Set();
+  const sSet = new Set();
+  for(const r of ALL){
+    if(r.user) aSet.add(r.user);
+    if(r.status_name) sSet.add(r.status_name);
+  }
+  const fA = $("fAgent");
+  const fS = $("fStatus");
+  const curA = fA.value;
+  const curS = fS.value;
+
+  fA.innerHTML = `<option value="">Tous</option>` + [...aSet].sort().map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
+  fS.innerHTML = `<option value="">Tous</option>` + [...sSet].sort().map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
+
+  if([...aSet].includes(curA)) fA.value = curA;
+  if([...sSet].includes(curS)) fS.value = curS;
+}
+
+/* ==============================
+   APPLY FILTERS (fonctionnel)
+============================== */
+$("btnApply").addEventListener("click", applyFilters);
+$("btnReset").addEventListener("click", ()=>{
+  $("fAgent").value = "";
+  $("fStatus").value = "";
+  $("q").value = "";
+  const today = new Date().toISOString().slice(0,10);
+  $("dateFrom").value = today;
+  $("dateTo").value = today;
+  $("limit").value = "200";
+  applyFilters();
+});
+$("btnExportFiltered").addEventListener("click", ()=>exportRows(FILTERED, "reporting_filtre.csv"));
+$("btnExportTable").addEventListener("click", ()=>exportRows(FILTERED, "reporting_table.csv"));
+$("btnExportAllTop").addEventListener("click", ()=>exportRows(ALL, "reporting_tout.csv"));
+$("btnExportFilteredTop").addEventListener("click", ()=>exportRows(FILTERED, "reporting_filtre.csv"));
+
+function applyFilters(){
+  const df = $("dateFrom").value;
+  const dt = $("dateTo").value;
+  const agent = $("fAgent").value;
+  const status = $("fStatus").value;
+  const q = norm($("q").value).toLowerCase();
+  const limit = parseInt($("limit").value, 10) || 200;
+
+  const fromD = df ? new Date(df+"T00:00:00") : null;
+  const toD = dt ? new Date(dt+"T23:59:59") : null;
+
+  FILTERED = ALL.filter(r=>{
+    const d = parseDateSafe(r.call_date);
+    if(fromD && (!d || d < fromD)) return false;
+    if(toD && (!d || d > toD)) return false;
+    if(agent && (r.user||"") !== agent) return false;
+    if(status && (r.status_name||"") !== status) return false;
+    if(q){
+      const hay = [
+        r.call_date, r.user, r.status, r.status_name, r.phone_number,
+        r.first_name, r.last_name, r.recording_location, r.comments,
+        r.sourceFile, r.importId
+      ].map(x=>(""+(x||""))).join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if(limit !== 999999) FILTERED = FILTERED.slice(0, limit);
+
+  renderStats();
+  renderTable();
+}
+
+/* ==============================
+   STATS + PIVOTS (filtré)
+============================== */
+function renderStats(){
+  const calls = FILTERED.length;
+  let sales = 0;
+  let dur = 0;
+  const agents = new Set();
+
+  const byAgent = {};     // {agent:{total,sales}}
+  const byStatus = {};    // {status:count}
+  const salesByDay = {};  // {YYYY-MM-DD:count}
+
+  for(const r of FILTERED){
+    dur += Number(r.length_in_sec||0);
+    if(r.user) agents.add(r.user);
+
+    const a = r.user || "(vide)";
+    byAgent[a] = byAgent[a] || { total:0, sales:0 };
+    byAgent[a].total++;
+
+    const st = r.status_name || "(vide)";
+    byStatus[st] = (byStatus[st]||0) + 1;
+
+    if((r.status_name||"").toUpperCase() === SALES_CODE){
+      sales++;
+      const dk = dayKey(r.call_date) || "(date?)";
+      salesByDay[dk] = (salesByDay[dk]||0) + 1;
+      byAgent[a].sales++;
+    }
+  }
+
+  $("statCalls").textContent = calls;
+  $("statSales").textContent = sales;
+  $("statAgents").textContent = agents.size;
+  $("statDur").textContent = dur;
+
+  // pivots
+  const agentLines = Object.entries(byAgent)
+    .sort((a,b)=> (b[1].sales - a[1].sales) || (b[1].total - a[1].total) || a[0].localeCompare(b[0]))
+    .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v.total}</b> / SALES <b>${v.sales}</b></span></div>`)
+    .join("") || `<div class="muted">Aucune donnée.</div>`;
+
+  const statusLines = Object.entries(byStatus)
+    .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]))
+    .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v}</b></span></div>`)
+    .join("") || `<div class="muted">Aucune donnée.</div>`;
+
+  const dayLines = Object.entries(salesByDay)
+    .sort((a,b)=> a[0].localeCompare(b[0]))
+    .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v}</b></span></div>`)
+    .join("") || `<div class="muted">Aucune donnée.</div>`;
+
+  $("pivotAgent").innerHTML = agentLines;
+  $("pivotStatus").innerHTML = statusLines;
+  $("pivotSalesDay").innerHTML = dayLines;
+}
+
+/* ==============================
+   TABLE (filtré)
+============================== */
+function canDelete(){
+  return (USER_ROLE||"").toUpperCase() === "ADMIN";
+}
+
+function renderTable(){
+  const tb = $("tbody");
+  if(!FILTERED.length){
+    tb.innerHTML = `<tr><td colspan="13" class="muted">Aucune donnée.</td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = FILTERED.map(r=>{
+    const delBtn = canDelete()
+      ? `<button class="btn danger small" onclick="deleteRow('${r.id}')">Supprimer</button>`
+      : `<span class="muted">—</span>`;
+
+    return `
+      <tr>
+        <td>${esc(r.call_date||"")}</td>
+        <td>${esc(r.user||"")}</td>
+        <td>${esc(r.status||"")}</td>
+        <td>${esc(r.status_name||"")}</td>
+        <td>${esc(r.phone_number||"")}</td>
+        <td>${esc(r.first_name||"")}</td>
+        <td>${esc(r.last_name||"")}</td>
+        <td>${esc(r.length_in_sec||"")}</td>
+        <td>${esc(r.recording_location||"")}</td>
+        <td style="white-space:normal;min-width:220px">${esc(r.comments||"")}</td>
+        <td>${esc(r.sourceFile||"")}</td>
+        <td>${esc(r.importId||"")}</td>
+        <td>${delBtn}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+window.deleteRow = async (id)=>{
+  if(!canDelete()){
+    alert("Suppression réservée à l'admin.");
+    return;
+  }
+  if(!confirm("Supprimer définitivement cette ligne ?")) return;
+  await deleteDoc(doc(db, CALLS_COL, id));
+  toast("Ligne supprimée.");
+};
+
+/* ==============================
+   EXPORTS (Tout / Filtré / Par import)
+============================== */
+function exportRows(rows, filename){
+  if(!rows || !rows.length){
+    alert("Aucune donnée à exporter.");
+    return;
+  }
+  // colonnes export “intégral”
+  const headers = [
+    "call_date","user","status","status_name","phone_number",
+    "first_name","last_name","length_in_sec","recording_location","comments",
+    "sourceFile","importId"
+  ];
+  const clean = rows.map(r=>{
+    const o = {};
+    headers.forEach(h=>o[h]=(r[h] ?? ""));
+    return o;
+  });
+  downloadText(filename, csvText(clean, headers));
+}
+
+/* ==============================
+   IMPORT + HISTORIQUE
+============================== */
+$("btnImport").addEventListener("click", doImport);
+
+const SYN = {
+  call_date: ["call_date","call date","calldate","date","call_time","calltime","calltime"],
+  user: ["user","agent","username","vicidial_user"],
+  status: ["status","statut","dispo","disposition"],
+  status_name: ["status_name","status name","statut_name","statut name","disposition_name","dispo_name"],
+  phone_number: ["phone_number","phone number","phone","tel","telephone","téléphone","phone_number_dialed","phone_number_called","dialed_number","phone_number_dialed"],
+  first_name: ["first_name","firstname","prenom","prénom","first"],
+  last_name: ["last_name","lastname","nom","last"],
+  length_in_sec: ["length_in_sec","length","duration","durée","duree","call_length","talk_sec","seconds","sec"],
+  recording_location: ["recording_location","recording","recording_url","recordinglocation","recording location"],
+  comments: ["comments","commentaire","comment","note","notes","remark","remarks","comments_vicidial"]
+};
+
+function bestIndex(headersLower, keys){
+  for(const k of keys){
+    const idx = headersLower.indexOf(k);
+    if(idx>=0) return idx;
+  }
+  for(const k of keys){
+    const idx = headersLower.findIndex(h=>h.includes(k));
+    if(idx>=0) return idx;
+  }
+  return -1;
+}
+
+async function doImport(){
+  const f = $("fileInput").files && $("fileInput").files[0];
+  if(!f){
+    alert("Choisis un fichier TXT/CSV d'abord.");
+    return;
+  }
+
+  $("importMsg").textContent = "Lecture du fichier…";
+  const text = await f.text();
+  const rawLines = (text||"").split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!rawLines.length){
+    $("importMsg").textContent = "Fichier vide.";
+    return;
+  }
+
+  const sep = detectSep(rawLines[0]);
+  const headerLine = rawLines[0];
+  const headers = headerLine.split(sep).map(h=>norm(h));
+  const headersLower = headers.map(h=>h.toLowerCase());
+
+  // on suppose ligne 0 = header
+  const map = {
+    call_date: bestIndex(headersLower, SYN.call_date),
+    user: bestIndex(headersLower, SYN.user),
+    status: bestIndex(headersLower, SYN.status),
+    status_name: bestIndex(headersLower, SYN.status_name),
+    phone_number: bestIndex(headersLower, SYN.phone_number),
+    first_name: bestIndex(headersLower, SYN.first_name),
+    last_name: bestIndex(headersLower, SYN.last_name),
+    length_in_sec: bestIndex(headersLower, SYN.length_in_sec),
+    recording_location: bestIndex(headersLower, SYN.recording_location),
+    comments: bestIndex(headersLower, SYN.comments)
+  };
+
+  // status_name fallback: si absent -> status
+  const hasStatusName = map.status_name >= 0;
+
+  // create import record
+  const importRef = await addDoc(collection(db, IMPORTS_COL), {
+    fileName: f.name,
+    separator: (sep === "\t" ? "TAB" : sep),
+    headerSample: headers.slice(0,40),
+    importedAt: serverTimestamp(),
+    importedBy: USER_UID || null,
+    roleAtImport: USER_ROLE || "GUEST",
+    rows: Math.max(0, rawLines.length-1),
+    note: "" // champ libre si tu veux écrire à la main dans Firestore (ou on ajoutera un input après)
+  });
+  const importId = importRef.id;
+
+  // batch write calls (chunks)
+  let added = 0;
+  let batch = writeBatch(db);
+  let batchCount = 0;
+
+  for(let i=1;i<rawLines.length;i++){
+    const cols = rawLines[i].split(sep);
+
+    const call_date = map.call_date>=0 ? (cols[map.call_date]||"") : "";
+    const user = map.user>=0 ? (cols[map.user]||"") : "";
+    const status = map.status>=0 ? (cols[map.status]||"") : "";
+    const status_name = hasStatusName
+      ? (cols[map.status_name]||"")
+      : status;
+
+    const phone_number = map.phone_number>=0 ? (cols[map.phone_number]||"") : "";
+    const first_name = map.first_name>=0 ? (cols[map.first_name]||"") : "";
+    const last_name = map.last_name>=0 ? (cols[map.last_name]||"") : "";
+
+    const length_in_sec = map.length_in_sec>=0 ? Number(cols[map.length_in_sec]||0) : 0;
+    const recording_location = map.recording_location>=0 ? (cols[map.recording_location]||"") : "";
+    const comments = map.comments>=0 ? (cols[map.comments]||"") : "";
+
+    // ignorer lignes vides
+    if(!norm(call_date) && !norm(phone_number) && !norm(user) && !norm(status_name)) continue;
+
+    const docRef = doc(collection(db, CALLS_COL));
+    batch.set(docRef, {
+      call_date: norm(call_date),
+      user: norm(user),
+      status: norm(status),
+      status_name: norm(status_name),
+      phone_number: norm(phone_number),
+      first_name: norm(first_name),
+      last_name: norm(last_name),
+      length_in_sec: Number.isFinite(length_in_sec) ? length_in_sec : 0,
+      recording_location: norm(recording_location),
+      comments: norm(comments),
+      sourceFile: f.name,
+      importId,
+      createdAt: serverTimestamp()
+    });
+
+    added++;
+    batchCount++;
+
+    if(batchCount >= 450){
+      await batch.commit();
+      batch = writeBatch(db);
+      batchCount = 0;
+    }
+  }
+
+  if(batchCount > 0) await batch.commit();
+
+  $("importMsg").textContent = `Import terminé   — ${added} ligne(s) ajoutée(s) • importId: ${importId}`;
+  toast("Import terminé ");
+  $("fileInput").value = "";
+}
+
+/* ==============================
+   HISTORIQUE IMPORTS UI
+============================== */
+function renderImports(){
+  const box = $("importsList");
+  if(!IMPORTS.length){
+    box.innerHTML = `<div class="muted">Aucun import.</div>`;
+    return;
+  }
+
+  box.innerHTML = IMPORTS.map(im=>{
+    const dt = im.importedAt?.toDate ? im.importedAt.toDate() : null;
+    const when = dt ? dt.toLocaleString() : "…";
+    const delBtn = canDelete()
+      ? `<button class="btn danger small" onclick="deleteImport('${im.id}')">Supprimer import</button>`
+      : `<button class="btn danger small" disabled title="Admin seulement">Supprimer import</button>`;
+
+    return `
+      <div class="card" style="margin:10px 0;padding:12px">
+        <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+          <div>
+            <b>${esc(im.fileName||"(sans nom)")}</b>
+            <div class="hint">Importé: ${esc(when)} • lignes: <b>${esc(im.rows||0)}</b> • séparateur: <b>${esc(im.separator||"")}</b></div>
+            <div class="hint">importId: <b>${esc(im.id)}</b></div>
+          </div>
+          <div class="rowBtns">
+            <button class="btn ghost small" onclick="exportImport('${im.id}','${esc(im.fileName||"import")}')"> Export import</button>
+            ${delBtn}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.exportImport = (importId, fileName)=>{
+  const rows = ALL.filter(r=>r.importId === importId);
+  if(!rows.length){ alert("Aucune ligne pour cet import."); return; }
+  const safe = (fileName||"import").replace(/[^\w\-]+/g,"_");
+  exportRows(rows, `reporting_${safe}_import.csv`);
+};
+
+window.deleteImport = async (importId)=>{
+  if(!canDelete()){
+    alert("Suppression réservée à l'admin.");
+    return;
+  }
+  if(!confirm("Supprimer cet import ET toutes ses lignes ?")) return;
+
+  // supprimer toutes les lignes liées (par lots)
+  const qy = query(collection(db, CALLS_COL), where("importId","==",importId));
+  const snap = await getDocs(qy);
+  if(!snap.empty){
+    let batch = writeBatch(db);
+    let c = 0;
+    snap.forEach(d=>{
+      batch.delete(d.ref);
+      c++;
+      if(c>=450){
+        batch.commit();
+        batch = writeBatch(db);
+        c=0;
+      }
+    });
+    if(c>0) await batch.commit();
+  }
+
+  // supprimer l'import
+  await deleteDoc(doc(db, IMPORTS_COL, importId));
+  toast("Import supprimé.");
+};
+</script>
+
+</body>
+</html>

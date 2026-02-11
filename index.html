@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM – Accueil</title>
+
+<style>
+:root{
+  --bg:#f4f7ff; --card:#fff; --text:#0b1220; --muted:#667085;
+  --stroke:rgba(15,23,42,.14); --blue:#0b57d0; --red:#ef4444;
+  --neon:#00f5ff; --shadow:0 10px 30px rgba(0,0,0,.15); --r:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Arial;background:var(--bg);color:var(--text)}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:14px}
+.card{background:var(--card);padding:18px;width:100%;max-width:1150px;border-radius:var(--r);box-shadow:var(--shadow)}
+.card.narrow{max-width:520px}
+h1{margin:0 0 8px;text-align:center;color:var(--blue)}
+label{font-size:13px;color:#555;display:block;margin:8px 0 6px}
+input,select,textarea{
+  width:100%;padding:11px;border-radius:10px;border:1px solid #cfd6e4;font-size:14px;
+  outline:none;background:#fff;
+}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:rgba(11,87,208,.55);box-shadow:0 0 0 3px rgba(11,87,208,.12)}
+button{padding:12px;border-radius:12px;border:none;font-weight:900;cursor:pointer}
+.primary{background:var(--blue);color:#fff}
+.danger{background:var(--red);color:#fff}
+.neon{background:var(--neon);color:#001b1e;box-shadow:0 0 10px var(--neon),0 0 25px var(--neon)}
+.hidden{display:none !important}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.who{font-weight:950;font-size:14px}
+.badge{font-size:12px;font-weight:950;background:#eef3ff;border:1px solid #d9e3ff;color:#06337a;padding:6px 10px;border-radius:999px}
+hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+.list{border:1px solid rgba(0,0,0,.12);border-radius:12px;overflow:hidden;background:#fff}
+.item{
+  display:grid;grid-template-columns:1fr auto;gap:10px;
+  padding:12px;border-bottom:1px solid rgba(0,0,0,.08)
+}
+.item:last-child{border-bottom:none}
+.meta{font-size:12px;color:var(--muted);line-height:1.45;margin-top:4px}
+.actions{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap}
+.btnMini{padding:8px 10px;border-radius:10px;font-size:12px;font-weight:950;border:1px solid rgba(15,23,42,.14);background:#fff}
+.btnMini:active{transform:scale(.99)}
+.pill{
+  display:inline-block;font-size:11px;font-weight:950;
+  padding:3px 8px;border-radius:999px;border:1px solid rgba(15,23,42,.14);background:#fff;
+}
+.pRDV{border-color:rgba(22,163,74,.25);background:rgba(22,163,74,.10);color:#0a3d1a}
+.pRAP{border-color:rgba(245,158,11,.30);background:rgba(245,158,11,.12);color:#2a1800}
+.pSTOP{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.10);color:#5a0014}
+.small{font-size:12px;color:#666;text-align:center;margin-top:8px}
+.toast{
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+  background:rgba(11,18,32,.92);color:#fff;padding:10px 12px;border-radius:12px;
+  font-size:13px;font-weight:950;display:none;z-index:999;border:1px solid rgba(255,255,255,.14);
+  max-width:92vw;
+}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:1000;
+}
+.sheet{
+  width:100%;max-width:900px;background:#fff;border-radius:18px;box-shadow:0 30px 120px rgba(0,0,0,.35);
+  border:1px solid rgba(15,23,42,.12);padding:14px;max-height:92vh;overflow:auto;
+}
+.sheetTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.sheetTop b{font-size:14px}
+</style>
+</head>
+
+<body>
+<div class="center">
+
+  <!-- LOGIN -->
+  <div id="loginCard" class="card narrow">
+    <h1>Connexion CRM</h1>
+
+    <label>Rôle</label>
+    <select id="role">
+      <option>TA1</option><option>TA2</option><option>TA3</option>
+      <option>TA4</option><option>TA5</option>
+      <option>Client</option>
+      <option value="Admin">Admin</option>
+      <option value="Custom">Nom libre</option>
+    </select>
+
+    <div id="customBox" class="hidden">
+      <label>Nom du rôle (libre)</label>
+      <input id="customRole" placeholder="Coach / Quality / Superviseur">
+    </div>
+
+    <label>Nom affiché</label>
+    <input id="name" placeholder="Naomi / Agent 1">
+
+    <div id="adminBox" class="hidden">
+      <label>Mot de passe Admin</label>
+      <input id="adminPass" type="password" placeholder="admin">
+    </div>
+
+    <button class="primary" id="btnLogin">Se connecter</button>
+    <div id="msg" class="small"></div>
+  </div>
+
+  <!-- APP -->
+  <div id="appCard" class="card hidden">
+    <div class="topbar">
+      <div class="who" id="who"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span class="badge" id="countBadge">0 prospects</span>
+        <button class="danger" id="btnLogout">Déconnexion</button>
+      </div>
+    </div>
+
+    <a href="reporting.html" style="text-decoration:none">
+      <button class="neon" style="margin:14px 0;width:100%"> ACCÉDER AU REPORTING</button>
+    </a>
+
+    <hr>
+
+    <h3 style="margin:0 0 8px"> Nouveau prospect</h3>
+
+    <div class="grid3">
+      <div>
+        <label>Agent</label>
+        <input id="p_agent" placeholder="TA1 / TA2 / Nom agent">
+      </div>
+      
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>Nom</label>
+        <input id="p_name" placeholder="Nom du prospect">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="p_phone" placeholder="Téléphone">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>Statut</label>
+        <select id="p_status">
+          <option value="RDV">RDV</option>
+          <option value="A_RAPPELER">A_RAPPELER</option>
+          <option value="NE_PLUS_APPELER">NE_PLUS_APPELER</option>
+        </select>
+      </div>
+            <div>
+        <label>Date & heure</label>
+        <input id="p_datetime" type="datetime-local">
+      </div>
+      <div>
+        <label>Code donné</label>
+        <input id="p_code" placeholder="Code">
+      </div>
+      <div>
+        <label>Commentaire</label>
+        <input id="p_comment" placeholder="Commentaire">
+      </div>
+    </div>
+
+    <button class="primary" id="btnAdd" style="width:100%;margin-top:10px">Ajouter</button>
+
+    <hr>
+
+    <h3 style="margin:0 0 8px"> Filtres</h3>
+    <div class="grid2">
+      <div>
+        <label>Statut</label>
+        <select id="f_status">
+          <option value="">Tous</option>
+          <option value="RDV">RDV</option>
+          <option value="A_RAPPELER">A_RAPPELER</option>
+          <option value="NE_PLUS_APPELER">NE_PLUS_APPELER</option>
+        </select>
+      </div>
+      <div>
+        <label>Recherche (nom / téléphone / agent / code)</label>
+        <input id="f_q" placeholder="Tapez pour filtrer">
+      </div>
+    </div>
+
+    <div class="small" id="rightsHint"></div>
+
+    <h3 style="margin:12px 0 8px"> Prospects (temps réel)</h3>
+    <div class="list" id="list"></div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- MODAL EDIT -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheetTop">
+      <b> Modifier prospect</b>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btnMini" id="btnCloseModal">Fermer</button>
+        <button class="primary" id="btnSaveEdit" style="padding:10px 12px;border-radius:12px">Enregistrer</button>
+      </div>
+    </div>
+    <hr>
+    <div class="grid3">
+      <div>
+        <label>Agent</label>
+        <input id="e_agent">
+      </div>
+      <div>
+        <label>Date & heure</label>
+        <input id="e_datetime" type="datetime-local">
+      </div>
+      <div>
+        <label>Code donné</label>
+        <input id="e_code">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>Nom</label>
+        <input id="e_name">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="e_phone">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>Statut</label>
+        <select id="e_status">
+          <option value="RDV">RDV</option>
+          <option value="A_RAPPELER">A_RAPPELER</option>
+          <option value="NE_PLUS_APPELER">NE_PLUS_APPELER</option>
+        </select>
+      </div>
+      <div>
+        <label>Commentaire</label>
+        <input id="e_comment">
+      </div>
+    </div>
+
+    <div class="small" id="editInfo"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, deleteDoc, updateDoc,
+  onSnapshot, doc, serverTimestamp, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+/* =========================
+   FIREBASE (même projet)
+========================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyA-G8P5NokxI6ZaIOMroQrH4x8mp_Q2dgg",
+  authDomain: "axokit-crm-ecoles-e56ab.firebaseapp.com",
+  projectId: "axokit-crm-ecoles-e56ab"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* =========================
+   DOM
+========================= */
+const $ = (id)=>document.getElementById(id);
+const toastEl = $("toast");
+function toast(t){
+  toastEl.textContent=t;
+  toastEl.style.display="block";
+  clearTimeout(toastEl._t);
+  toastEl._t=setTimeout(()=>toastEl.style.display="none", 2200);
+}
+function esc(s){
+  return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function norm(s){ return (s==null?"":String(s)).trim(); }
+function pillForStatus(s){
+  if(s==="RDV") return `<span class="pill pRDV">RDV</span>`;
+  if(s==="A_RAPPELER") return `<span class="pill pRAP">A_RAPPELER</span>`;
+  if(s==="NE_PLUS_APPELER") return `<span class="pill pSTOP">NE_PLUS_APPELER</span>`;
+  return `<span class="pill">${esc(s||"")}</span>`;
+}
+
+/* =========================
+   AUTH (localStorage)
+========================= */
+const STORE="CRM_USER";
+let CURRENT_USER = null;
+let unsub = null;
+
+function applyRoleUI(){
+  $("customBox").classList.toggle("hidden", $("role").value!=="Custom");
+  $("adminBox").classList.toggle("hidden", $("role").value!=="Admin");
+  $("msg").textContent="";
+}
+$("role").addEventListener("change", applyRoleUI);
+applyRoleUI();
+
+function showApp(){
+  $("loginCard").classList.add("hidden");
+  $("appCard").classList.remove("hidden");
+  $("who").textContent = `${CURRENT_USER.name} — ${CURRENT_USER.role}${CURRENT_USER.isAdmin ? " (Admin)" : ""}`;
+  $("rightsHint").textContent = CURRENT_USER.isAdmin
+    ? "Admin : peut supprimer. Tous : peuvent modifier."
+    : "Vous pouvez modifier. Suppression réservée à l’admin.";
+  // pré-remplir Agent avec l'utilisateur connecté (pratique)
+  $("p_agent").value = CURRENT_USER.name;
+}
+
+function showLogin(){
+  $("loginCard").classList.remove("hidden");
+  $("appCard").classList.add("hidden");
+}
+
+function saveUser(u){
+  localStorage.setItem(STORE, JSON.stringify(u));
+  CURRENT_USER = u;
+}
+
+function loadUser(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE) || "null");
+    if(s && s.name && s.role) return s;
+  }catch(e){}
+  return null;
+}
+
+$("btnLogin").addEventListener("click", ()=>{
+  const roleVal = $("role").value;
+  const nameVal = norm($("name").value);
+  const adminPass = $("adminPass").value;
+  const customRole = norm($("customRole").value);
+
+  if(!nameVal){ $("msg").textContent="Nom requis"; return; }
+
+  let finalRole = roleVal;
+  if(roleVal==="Custom"){
+    if(!customRole){ $("msg").textContent="Nom du rôle requis"; return; }
+    finalRole = customRole;
+  }
+
+  const isAdmin = (roleVal==="Admin");
+  if(isAdmin && adminPass!=="admin2026"){ $("msg").textContent="Mot de passe incorrect"; return; }
+
+  saveUser({ name: nameVal, role: finalRole, isAdmin });
+  showApp();
+  startRealtime();
+  toast("Connecté");
+});
+
+$("btnLogout").addEventListener("click", ()=>{
+  if(unsub){ unsub(); unsub=null; }
+  localStorage.removeItem(STORE);
+  CURRENT_USER=null;
+  location.reload();
+});
+
+/* Auto-login */
+const saved = loadUser();
+if(saved){
+  CURRENT_USER = saved;
+  showApp();
+  startRealtime();
+}else{
+  showLogin();
+}
+
+/* =========================
+   FIRESTORE (prospects)
+========================= */
+const col = collection(db, "prospects");
+let CACHE = []; // cache pour filtres
+
+function startRealtime(){
+  if(unsub){ unsub(); unsub=null; }
+  // Tri stable : createdAt desc (évite index sur updatedAt)
+  const qy = query(col, orderBy("createdAt","desc"));
+
+  unsub = onSnapshot(qy, (snap)=>{
+    CACHE = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    $("countBadge").textContent = `${CACHE.length} prospects`;
+    renderList();
+  }, (err)=>{
+    console.error(err);
+    toast("Erreur Firebase (droits Firestore ?)");
+  });
+
+  $("f_status").addEventListener("change", renderList);
+  $("f_q").addEventListener("input", renderList);
+}
+
+function matchesFilters(p){
+  const fs = $("f_status").value;
+  const q = norm($("f_q").value).toLowerCase();
+  if(fs && p.status!==fs) return false;
+  if(q){
+    const blob = [
+      p.agent, p.name, p.phone, p.code, p.comment, p.datetime, p.status
+    ].map(x=>String(x||"").toLowerCase()).join(" ");
+    if(!blob.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderList(){
+  const rows = CACHE.filter(matchesFilters);
+  const html = rows.map(p=>{
+    const upd = p.updatedBy ? ` ${esc(p.updatedBy)}` : "";
+    const dt = p.datetime ? ` ${esc(p.datetime)}` : " -";
+    const ag = p.agent ? ` ${esc(p.agent)}` : " -";
+    const code = p.code ? ` ${esc(p.code)}` : " -";
+    const com = p.comment ? ` ${esc(p.comment)}` : "";
+
+    const canDelete = !!(CURRENT_USER && CURRENT_USER.isAdmin);
+    return `
+      <div class="item" data-id="${esc(p.id)}">
+        <div>
+          <b>${esc(p.name||"-")}</b> — ${esc(p.phone||"-")} ${pillForStatus(p.status)}
+          <div class="meta">
+            ${ag}<br>
+            ${dt} | ${code}<br>
+            ${com}<br>
+            ${upd}
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btnMini" data-action="edit" data-id="${esc(p.id)}"> Modifier</button>
+          ${canDelete ? `<button class="btnMini" data-action="del" data-id="${esc(p.id)}"> Supprimer</button>` : ``}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  $("list").innerHTML = html || `<div class="item"><div class="meta">Aucune donnée.</div><div></div></div>`;
+}
+
+/* ADD */
+$("btnAdd").addEventListener("click", async ()=>{
+  if(!CURRENT_USER){ toast("Veuillez vous connecter"); return; }
+
+  const agent = norm($("p_agent").value);
+  const datetime = $("p_datetime").value || "";
+  const code = norm($("p_code").value);
+  const name = norm($("p_name").value);
+  const phone = norm($("p_phone").value);
+  const status = $("p_status").value;
+  const comment = norm($("p_comment").value);
+
+  if(!name || !phone){
+    alert("Nom et téléphone requis");
+    return;
+  }
+
+  await addDoc(col, {
+    agent, datetime, code, name, phone, status, comment,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    updatedBy: CURRENT_USER.name
+  });
+
+  $("p_name").value="";
+  $("p_phone").value="";
+  $("p_code").value="";
+  $("p_comment").value="";
+  // garder agent par défaut
+  toast("Prospect ajouté");
+});
+
+/* =========================
+   EDIT / DELETE (event delegation)
+========================= */
+let EDIT_ID = null;
+
+$("list").addEventListener("click", async (e)=>{
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  const action = btn.getAttribute("data-action");
+  const id = btn.getAttribute("data-id");
+  if(!action || !id) return;
+
+  const p = CACHE.find(x=>x.id===id);
+  if(!p) return;
+
+  if(action==="del"){
+    if(!CURRENT_USER || !CURRENT_USER.isAdmin){
+      alert("Admin uniquement");
+      return;
+    }
+    if(confirm("Supprimer ce prospect ?")){
+      await deleteDoc(doc(db,"prospects",id));
+      toast("Supprimé");
+    }
+    return;
+  }
+
+  if(action==="edit"){
+    openEdit(p);
+    return;
+  }
+});
+
+function openEdit(p){
+  if(!CURRENT_USER){ toast("Veuillez vous connecter"); return; }
+  EDIT_ID = p.id;
+  $("e_agent").value = p.agent || "";
+  $("e_datetime").value = p.datetime || "";
+  $("e_code").value = p.code || "";
+  $("e_name").value = p.name || "";
+  $("e_phone").value = p.phone || "";
+  $("e_status").value = p.status || "RDV";
+  $("e_comment").value = p.comment || "";
+  $("editInfo").textContent = `Dernière modif : ${p.updatedBy || "-"} • ${p.updatedAt ? "" : ""}`;
+  $("modal").style.display = "flex";
+}
+
+function closeEdit(){
+  EDIT_ID = null;
+  $("modal").style.display = "none";
+}
+
+$("btnCloseModal").addEventListener("click", closeEdit);
+$("modal").addEventListener("click", (e)=>{
+  if(e.target === $("modal")) closeEdit();
+});
+
+$("btnSaveEdit").addEventListener("click", async ()=>{
+  if(!EDIT_ID) return;
+  if(!CURRENT_USER){ toast("Veuillez vous connecter"); return; }
+
+  const agent = norm($("e_agent").value);
+  const datetime = $("e_datetime").value || "";
+  const code = norm($("e_code").value);
+  const name = norm($("e_name").value);
+  const phone = norm($("e_phone").value);
+  const status = $("e_status").value;
+  const comment = norm($("e_comment").value);
+
+  if(!name || !phone){
+    alert("Nom et téléphone requis");
+    return;
+  }
+
+  await updateDoc(doc(db,"prospects",EDIT_ID),{
+    agent, datetime, code, name, phone, status, comment,
+    updatedAt: serverTimestamp(),
+    updatedBy: CURRENT_USER.name
+  });
+
+  closeEdit();
+  toast("Modifié");
+});
+</script>
+
+</body>
+</html>
