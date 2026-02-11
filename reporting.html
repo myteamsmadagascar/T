@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Reporting Vicidial ó Import ï Historique ï Filtres ï Stats ï Export Excel</title>
+<title>Reporting Vicidial ‚Äî Import ‚Ä¢ Historique ‚Ä¢ Filtres ‚Ä¢ Stats ‚Ä¢ Export Excel</title>
 
 <style>
   :root{
@@ -123,15 +123,15 @@
     <div class="brand">
       <div class="logo"></div>
       <div class="title">
-        <b>Reporting Vicidial ó Complet</b>
-        <span>Import TXT/CSV ï Historique imports ï Filtres ï Stats ï Export Excel (Tout / FiltrÈ / Par import)</span>
+        <b>Reporting Vicidial ‚Äî Complet</b>
+        <span>Import TXT/CSV ‚Ä¢ Historique imports ‚Ä¢ Filtres ‚Ä¢ Stats ‚Ä¢ Export Excel (Tout / Filtr√© / Par import)</span>
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end">
-      <span id="pillRole" class="pill">RÙle: Ö</span>
+      <span id="pillRole" class="pill">R√¥le: ‚Ä¶</span>
       <span id="pillAll" class="pill">Total base: 0</span>
       <button id="btnExportAllTop" class="btn ghost small"> Export tout</button>
-      <button id="btnExportFilteredTop" class="btn primary small"> Export filtrÈ</button>
+      <button id="btnExportFilteredTop" class="btn primary small"> Export filtr√©</button>
       <button id="btnHome" class="btn ghost small" onclick="location.href='index.html'"> Accueil</button>
     </div>
   </div>
@@ -143,7 +143,7 @@
   <section class="card">
     <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
       <div>
-        <b style="font-weight:950"> Statistiques (sur le jeu filtrÈ)</b>
+        <b style="font-weight:950"> Statistiques (sur le jeu filtr√©)</b>
         <div class="hint">RDV = <b>SALES</b> uniquement.</div>
       </div>
       <div class="rowBtns">
@@ -155,7 +155,7 @@
       <div class="statBox"><div class="muted">Appels (lignes)</div><div id="statCalls" class="big">0</div></div>
       <div class="statBox"><div class="muted">Total SALES (RDV)</div><div id="statSales" class="big">0</div></div>
       <div class="statBox"><div class="muted">Agents distincts</div><div id="statAgents" class="big">0</div></div>
-      <div class="statBox"><div class="muted">DurÈe totale (sec)</div><div id="statDur" class="big">0</div></div>
+      <div class="statBox"><div class="muted">Dur√©e totale (sec)</div><div id="statDur" class="big">0</div></div>
     </div>
 
     <div class="divider"></div>
@@ -163,15 +163,15 @@
     <div class="three">
       <div>
         <label>Pivot par agent (Total / SALES)</label>
-        <div id="pivotAgent" class="miniList"><div class="muted">Aucune donnÈe.</div></div>
+        <div id="pivotAgent" class="miniList"><div class="muted">Aucune donn√©e.</div></div>
       </div>
       <div>
         <label>Pivot par statut</label>
-        <div id="pivotStatus" class="miniList"><div class="muted">Aucune donnÈe.</div></div>
+        <div id="pivotStatus" class="miniList"><div class="muted">Aucune donn√©e.</div></div>
       </div>
       <div>
         <label>SALES par jour</label>
-        <div id="pivotSalesDay" class="miniList"><div class="muted">Aucune donnÈe.</div></div>
+        <div id="pivotSalesDay" class="miniList"><div class="muted">Aucune donn√©e.</div></div>
       </div>
     </div>
   </section>
@@ -181,11 +181,11 @@
     <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
       <div>
         <b style="font-weight:950">1) Import Vicidial</b>
-        <div class="hint">Fichiers acceptÈs: <b>TXT</b> / <b>CSV</b> (dÈtection auto TAB, ;, ,). Import direct (pas de mapping manuel).</div>
+        <div class="hint">Fichiers accept√©s: <b>TXT</b> / <b>CSV</b> (d√©tection auto TAB, ;, ,). Import direct (pas de mapping manuel).</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <input id="fileInput" type="file" class="input" style="min-width:260px" accept=".txt,.csv,.tsv,text/plain,text/csv" />
-        <button id="btnImport" class="btn green"> Valider líimport</button>
+        <button id="btnImport" class="btn green"> Valider l‚Äôimport</button>
       </div>
     </div>
     <div id="importMsg" class="hint" style="margin-top:10px"></div>
@@ -193,7 +193,7 @@
     <div class="divider"></div>
 
     <b style="font-weight:950">Historique des imports</b>
-    <div class="hint" style="margin-top:6px">Chaque import a: export + (admin) supprimer líimport (supprime aussi les lignes liÈes).</div>
+    <div class="hint" style="margin-top:6px">Chaque import a: export + (admin) supprimer l‚Äôimport (supprime aussi les lignes li√©es).</div>
     <div id="importsList" class="card" style="margin-top:10px"></div>
   </section>
 
@@ -202,18 +202,18 @@
     <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
       <div>
         <b style="font-weight:950">2) Filtres reporting</b>
-        <div class="hint">SÈlectionner une plage de dates ìde Ö ‡ Öî, filtrer agent, statut, rechercher, puis exporter le jeu filtrÈ.</div>
+        <div class="hint">S√©lectionner une plage de dates ‚Äúde ‚Ä¶ √† ‚Ä¶‚Äù, filtrer agent, statut, rechercher, puis exporter le jeu filtr√©.</div>
       </div>
       <div class="rowBtns">
         <button id="btnApply" class="btn primary small">Appliquer</button>
-        <button id="btnReset" class="btn ghost small">RÈinitialiser</button>
-        <button id="btnExportFiltered" class="btn ghost small"> Export filtrÈ</button>
+        <button id="btnReset" class="btn ghost small">R√©initialiser</button>
+        <button id="btnExportFiltered" class="btn ghost small"> Export filtr√©</button>
       </div>
     </div>
 
     <div class="four" style="margin-top:10px">
       <div>
-        <label>Date dÈbut</label>
+        <label>Date d√©but</label>
         <input id="dateFrom" class="input" type="date">
       </div>
       <div>
@@ -233,7 +233,7 @@
     <div class="two">
       <div>
         <label>Recherche</label>
-        <input id="q" class="input" placeholder="Nom, prÈnom, tÈlÈphone, commentaire, recording..." />
+        <input id="q" class="input" placeholder="Nom, pr√©nom, t√©l√©phone, commentaire, recording..." />
       </div>
       <div>
         <label>Affichage</label>
@@ -251,8 +251,8 @@
   <section class="card">
     <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
       <div>
-        <b style="font-weight:950">3) Tableau intÈgral (jeu filtrÈ)</b>
-        <div class="hint">Export filtrÈ = exactement les mÍmes colonnes que ce tableau.</div>
+        <b style="font-weight:950">3) Tableau int√©gral (jeu filtr√©)</b>
+        <div class="hint">Export filtr√© = exactement les m√™mes colonnes que ce tableau.</div>
       </div>
       <div class="rowBtns">
         <button id="btnExportTable" class="btn ghost small"> Export (table)</button>
@@ -279,7 +279,7 @@
           </tr>
         </thead>
         <tbody id="tbody">
-          <tr><td colspan="13" class="muted">Aucune donnÈe.</td></tr>
+          <tr><td colspan="13" class="muted">Aucune donn√©e.</td></tr>
         </tbody>
       </table>
     </div>
@@ -291,7 +291,7 @@
 
 <script type="module">
 /* ==============================
-   FIREBASE (mÍme projet)
+   FIREBASE (m√™me projet)
 ============================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
@@ -322,7 +322,7 @@ const IMPORTS_COL = "vicidial_imports";
 const SALES_CODE = "SALE";
 
 let ALL = [];           // toutes les lignes en base
-let FILTERED = [];      // lignes filtrÈes
+let FILTERED = [];      // lignes filtr√©es
 let IMPORTS = [];       // historique imports
 
 let USER_ROLE = "GUEST";
@@ -420,7 +420,7 @@ function downloadText(filename, text){
 onAuthStateChanged(auth, async (user)=>{
   if(user){
     USER_UID = user.uid;
-    // rÙle via /users/{uid}.role si existe
+    // r√¥le via /users/{uid}.role si existe
     try{
       const u = await getDoc(doc(db,"users",user.uid));
       USER_ROLE = u.exists() ? (u.data()?.role || "USER") : "USER";
@@ -431,7 +431,7 @@ onAuthStateChanged(auth, async (user)=>{
     USER_UID = null;
     USER_ROLE = "GUEST";
   }
-  $("pillRole").textContent = `RÙle: ${USER_ROLE}`;
+  $("pillRole").textContent = `R√¥le: ${USER_ROLE}`;
   renderImports();
   renderTable(); // refresh to update action buttons
 });
@@ -530,7 +530,7 @@ function applyFilters(){
 }
 
 /* ==============================
-   STATS + PIVOTS (filtrÈ)
+   STATS + PIVOTS (filtr√©)
 ============================== */
 function renderStats(){
   const calls = FILTERED.length;
@@ -570,17 +570,17 @@ function renderStats(){
   const agentLines = Object.entries(byAgent)
     .sort((a,b)=> (b[1].sales - a[1].sales) || (b[1].total - a[1].total) || a[0].localeCompare(b[0]))
     .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v.total}</b> / SALES <b>${v.sales}</b></span></div>`)
-    .join("") || `<div class="muted">Aucune donnÈe.</div>`;
+    .join("") || `<div class="muted">Aucune donn√©e.</div>`;
 
   const statusLines = Object.entries(byStatus)
     .sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0]))
     .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v}</b></span></div>`)
-    .join("") || `<div class="muted">Aucune donnÈe.</div>`;
+    .join("") || `<div class="muted">Aucune donn√©e.</div>`;
 
   const dayLines = Object.entries(salesByDay)
     .sort((a,b)=> a[0].localeCompare(b[0]))
     .map(([k,v])=>`<div><span>${esc(k)}</span><span><b>${v}</b></span></div>`)
-    .join("") || `<div class="muted">Aucune donnÈe.</div>`;
+    .join("") || `<div class="muted">Aucune donn√©e.</div>`;
 
   $("pivotAgent").innerHTML = agentLines;
   $("pivotStatus").innerHTML = statusLines;
@@ -588,7 +588,7 @@ function renderStats(){
 }
 
 /* ==============================
-   TABLE (filtrÈ)
+   TABLE (filtr√©)
 ============================== */
 function canDelete(){
   return (USER_ROLE||"").toUpperCase() === "ADMIN";
@@ -597,14 +597,14 @@ function canDelete(){
 function renderTable(){
   const tb = $("tbody");
   if(!FILTERED.length){
-    tb.innerHTML = `<tr><td colspan="13" class="muted">Aucune donnÈe.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="13" class="muted">Aucune donn√©e.</td></tr>`;
     return;
   }
 
   tb.innerHTML = FILTERED.map(r=>{
     const delBtn = canDelete()
       ? `<button class="btn danger small" onclick="deleteRow('${r.id}')">Supprimer</button>`
-      : `<span class="muted">ó</span>`;
+      : `<span class="muted">‚Äî</span>`;
 
     return `
       <tr>
@@ -628,23 +628,23 @@ function renderTable(){
 
 window.deleteRow = async (id)=>{
   if(!canDelete()){
-    alert("Suppression rÈservÈe ‡ l'admin.");
+    alert("Suppression r√©serv√©e √† l'admin.");
     return;
   }
-  if(!confirm("Supprimer dÈfinitivement cette ligne ?")) return;
+  if(!confirm("Supprimer d√©finitivement cette ligne ?")) return;
   await deleteDoc(doc(db, CALLS_COL, id));
-  toast("Ligne supprimÈe.");
+  toast("Ligne supprim√©e.");
 };
 
 /* ==============================
-   EXPORTS (Tout / FiltrÈ / Par import)
+   EXPORTS (Tout / Filtr√© / Par import)
 ============================== */
 function exportRows(rows, filename){
   if(!rows || !rows.length){
-    alert("Aucune donnÈe ‡ exporter.");
+    alert("Aucune donn√©e √† exporter.");
     return;
   }
-  // colonnes export ìintÈgralî
+  // colonnes export ‚Äúint√©gral‚Äù
   const headers = [
     "call_date","user","status","status_name","phone_number",
     "first_name","last_name","length_in_sec","recording_location","comments",
@@ -668,10 +668,10 @@ const SYN = {
   user: ["user","agent","username","vicidial_user"],
   status: ["status","statut","dispo","disposition"],
   status_name: ["status_name","status name","statut_name","statut name","disposition_name","dispo_name"],
-  phone_number: ["phone_number","phone number","phone","tel","telephone","tÈlÈphone","phone_number_dialed","phone_number_called","dialed_number","phone_number_dialed"],
-  first_name: ["first_name","firstname","prenom","prÈnom","first"],
+  phone_number: ["phone_number","phone number","phone","tel","telephone","t√©l√©phone","phone_number_dialed","phone_number_called","dialed_number","phone_number_dialed"],
+  first_name: ["first_name","firstname","prenom","pr√©nom","first"],
   last_name: ["last_name","lastname","nom","last"],
-  length_in_sec: ["length_in_sec","length","duration","durÈe","duree","call_length","talk_sec","seconds","sec"],
+  length_in_sec: ["length_in_sec","length","duration","dur√©e","duree","call_length","talk_sec","seconds","sec"],
   recording_location: ["recording_location","recording","recording_url","recordinglocation","recording location"],
   comments: ["comments","commentaire","comment","note","notes","remark","remarks","comments_vicidial"]
 };
@@ -695,7 +695,7 @@ async function doImport(){
     return;
   }
 
-  $("importMsg").textContent = "Lecture du fichierÖ";
+  $("importMsg").textContent = "Lecture du fichier‚Ä¶";
   const text = await f.text();
   const rawLines = (text||"").split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
   if(!rawLines.length){
@@ -734,7 +734,7 @@ async function doImport(){
     importedBy: USER_UID || null,
     roleAtImport: USER_ROLE || "GUEST",
     rows: Math.max(0, rawLines.length-1),
-    note: "" // champ libre si tu veux Ècrire ‡ la main dans Firestore (ou on ajoutera un input aprËs)
+    note: "" // champ libre si tu veux √©crire √† la main dans Firestore (ou on ajoutera un input apr√®s)
   });
   const importId = importRef.id;
 
@@ -793,8 +793,8 @@ async function doImport(){
 
   if(batchCount > 0) await batch.commit();
 
-  $("importMsg").textContent = `Import terminÈ   ó ${added} ligne(s) ajoutÈe(s) ï importId: ${importId}`;
-  toast("Import terminÈ ");
+  $("importMsg").textContent = `Import termin√©   ‚Äî ${added} ligne(s) ajout√©e(s) ‚Ä¢ importId: ${importId}`;
+  toast("Import termin√© ");
   $("fileInput").value = "";
 }
 
@@ -810,7 +810,7 @@ function renderImports(){
 
   box.innerHTML = IMPORTS.map(im=>{
     const dt = im.importedAt?.toDate ? im.importedAt.toDate() : null;
-    const when = dt ? dt.toLocaleString() : "Ö";
+    const when = dt ? dt.toLocaleString() : "‚Ä¶";
     const delBtn = canDelete()
       ? `<button class="btn danger small" onclick="deleteImport('${im.id}')">Supprimer import</button>`
       : `<button class="btn danger small" disabled title="Admin seulement">Supprimer import</button>`;
@@ -820,7 +820,7 @@ function renderImports(){
         <div style="display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
           <div>
             <b>${esc(im.fileName||"(sans nom)")}</b>
-            <div class="hint">ImportÈ: ${esc(when)} ï lignes: <b>${esc(im.rows||0)}</b> ï sÈparateur: <b>${esc(im.separator||"")}</b></div>
+            <div class="hint">Import√©: ${esc(when)} ‚Ä¢ lignes: <b>${esc(im.rows||0)}</b> ‚Ä¢ s√©parateur: <b>${esc(im.separator||"")}</b></div>
             <div class="hint">importId: <b>${esc(im.id)}</b></div>
           </div>
           <div class="rowBtns">
@@ -842,12 +842,12 @@ window.exportImport = (importId, fileName)=>{
 
 window.deleteImport = async (importId)=>{
   if(!canDelete()){
-    alert("Suppression rÈservÈe ‡ l'admin.");
+    alert("Suppression r√©serv√©e √† l'admin.");
     return;
   }
   if(!confirm("Supprimer cet import ET toutes ses lignes ?")) return;
 
-  // supprimer toutes les lignes liÈes (par lots)
+  // supprimer toutes les lignes li√©es (par lots)
   const qy = query(collection(db, CALLS_COL), where("importId","==",importId));
   const snap = await getDocs(qy);
   if(!snap.empty){
@@ -867,7 +867,7 @@ window.deleteImport = async (importId)=>{
 
   // supprimer l'import
   await deleteDoc(doc(db, IMPORTS_COL, importId));
-  toast("Import supprimÈ.");
+  toast("Import supprim√©.");
 };
 </script>
 
