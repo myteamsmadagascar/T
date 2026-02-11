@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CRM – Accueil</title>
+<title>CRM â€“ Accueil</title>
 
 <style>
 :root{
@@ -79,7 +79,7 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
   <div id="loginCard" class="card narrow">
     <h1>Connexion CRM</h1>
 
-    <label>Rôle</label>
+    <label>RÃ´le</label>
     <select id="role">
       <option>TA1</option><option>TA2</option><option>TA3</option>
       <option>TA4</option><option>TA5</option>
@@ -89,11 +89,11 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
     </select>
 
     <div id="customBox" class="hidden">
-      <label>Nom du rôle (libre)</label>
+      <label>Nom du rÃ´le (libre)</label>
       <input id="customRole" placeholder="Coach / Quality / Superviseur">
     </div>
 
-    <label>Nom affiché</label>
+    <label>Nom affichÃ©</label>
     <input id="name" placeholder="Naomi / Agent 1">
 
     <div id="adminBox" class="hidden">
@@ -111,12 +111,12 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
       <div class="who" id="who"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <span class="badge" id="countBadge">0 prospects</span>
-        <button class="danger" id="btnLogout">Déconnexion</button>
+        <button class="danger" id="btnLogout">DÃ©connexion</button>
       </div>
     </div>
 
     <a href="reporting.html" style="text-decoration:none">
-      <button class="neon" style="margin:14px 0;width:100%"> ACCÉDER AU REPORTING</button>
+      <button class="neon" style="margin:14px 0;width:100%"> ACCÃ‰DER AU REPORTING</button>
     </a>
 
     <hr>
@@ -137,8 +137,8 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
         <input id="p_name" placeholder="Nom du prospect">
       </div>
       <div>
-        <label>Téléphone</label>
-        <input id="p_phone" placeholder="Téléphone">
+        <label>TÃ©lÃ©phone</label>
+        <input id="p_phone" placeholder="TÃ©lÃ©phone">
       </div>
     </div>
 
@@ -156,7 +156,7 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
         <input id="p_datetime" type="datetime-local">
       </div>
       <div>
-        <label>Code donné</label>
+        <label>Code donnÃ©</label>
         <input id="p_code" placeholder="Code">
       </div>
       <div>
@@ -181,14 +181,14 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
         </select>
       </div>
       <div>
-        <label>Recherche (nom / téléphone / agent / code)</label>
+        <label>Recherche (nom / tÃ©lÃ©phone / agent / code)</label>
         <input id="f_q" placeholder="Tapez pour filtrer">
       </div>
     </div>
 
     <div class="small" id="rightsHint"></div>
 
-    <h3 style="margin:12px 0 8px"> Prospects (temps réel)</h3>
+    <h3 style="margin:12px 0 8px"> Prospects (temps rÃ©el)</h3>
     <div class="list" id="list"></div>
   </div>
 
@@ -217,7 +217,7 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
         <input id="e_datetime" type="datetime-local">
       </div>
       <div>
-        <label>Code donné</label>
+        <label>Code donnÃ©</label>
         <input id="e_code">
       </div>
     </div>
@@ -228,7 +228,7 @@ hr{border:0;border-top:1px solid rgba(0,0,0,.12);margin:14px 0}
         <input id="e_name">
       </div>
       <div>
-        <label>Téléphone</label>
+        <label>TÃ©lÃ©phone</label>
         <input id="e_phone">
       </div>
     </div>
@@ -260,7 +260,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 /* =========================
-   FIREBASE (même projet)
+   FIREBASE (mÃªme projet)
 ========================= */
 const firebaseConfig = {
   apiKey: "AIzaSyA-G8P5NokxI6ZaIOMroQrH4x8mp_Q2dgg",
@@ -310,11 +310,11 @@ applyRoleUI();
 function showApp(){
   $("loginCard").classList.add("hidden");
   $("appCard").classList.remove("hidden");
-  $("who").textContent = `${CURRENT_USER.name} — ${CURRENT_USER.role}${CURRENT_USER.isAdmin ? " (Admin)" : ""}`;
+  $("who").textContent = `${CURRENT_USER.name} â€” ${CURRENT_USER.role}${CURRENT_USER.isAdmin ? " (Admin)" : ""}`;
   $("rightsHint").textContent = CURRENT_USER.isAdmin
     ? "Admin : peut supprimer. Tous : peuvent modifier."
-    : "Vous pouvez modifier. Suppression réservée à l’admin.";
-  // pré-remplir Agent avec l'utilisateur connecté (pratique)
+    : "Vous pouvez modifier. Suppression rÃ©servÃ©e Ã  lâ€™admin.";
+  // prÃ©-remplir Agent avec l'utilisateur connectÃ© (pratique)
   $("p_agent").value = CURRENT_USER.name;
 }
 
@@ -346,7 +346,7 @@ $("btnLogin").addEventListener("click", ()=>{
 
   let finalRole = roleVal;
   if(roleVal==="Custom"){
-    if(!customRole){ $("msg").textContent="Nom du rôle requis"; return; }
+    if(!customRole){ $("msg").textContent="Nom du rÃ´le requis"; return; }
     finalRole = customRole;
   }
 
@@ -356,7 +356,7 @@ $("btnLogin").addEventListener("click", ()=>{
   saveUser({ name: nameVal, role: finalRole, isAdmin });
   showApp();
   startRealtime();
-  toast("Connecté");
+  toast("ConnectÃ©");
 });
 
 $("btnLogout").addEventListener("click", ()=>{
@@ -384,7 +384,7 @@ let CACHE = []; // cache pour filtres
 
 function startRealtime(){
   if(unsub){ unsub(); unsub=null; }
-  // Tri stable : createdAt desc (évite index sur updatedAt)
+  // Tri stable : createdAt desc (Ã©vite index sur updatedAt)
   const qy = query(col, orderBy("createdAt","desc"));
 
   unsub = onSnapshot(qy, (snap)=>{
@@ -426,7 +426,7 @@ function renderList(){
     return `
       <div class="item" data-id="${esc(p.id)}">
         <div>
-          <b>${esc(p.name||"-")}</b> — ${esc(p.phone||"-")} ${pillForStatus(p.status)}
+          <b>${esc(p.name||"-")}</b> â€” ${esc(p.phone||"-")} ${pillForStatus(p.status)}
           <div class="meta">
             ${ag}<br>
             ${dt} | ${code}<br>
@@ -442,7 +442,7 @@ function renderList(){
     `;
   }).join("");
 
-  $("list").innerHTML = html || `<div class="item"><div class="meta">Aucune donnée.</div><div></div></div>`;
+  $("list").innerHTML = html || `<div class="item"><div class="meta">Aucune donnÃ©e.</div><div></div></div>`;
 }
 
 /* ADD */
@@ -458,7 +458,7 @@ $("btnAdd").addEventListener("click", async ()=>{
   const comment = norm($("p_comment").value);
 
   if(!name || !phone){
-    alert("Nom et téléphone requis");
+    alert("Nom et tÃ©lÃ©phone requis");
     return;
   }
 
@@ -473,8 +473,8 @@ $("btnAdd").addEventListener("click", async ()=>{
   $("p_phone").value="";
   $("p_code").value="";
   $("p_comment").value="";
-  // garder agent par défaut
-  toast("Prospect ajouté");
+  // garder agent par dÃ©faut
+  toast("Prospect ajoutÃ©");
 });
 
 /* =========================
@@ -499,7 +499,7 @@ $("list").addEventListener("click", async (e)=>{
     }
     if(confirm("Supprimer ce prospect ?")){
       await deleteDoc(doc(db,"prospects",id));
-      toast("Supprimé");
+      toast("SupprimÃ©");
     }
     return;
   }
@@ -520,7 +520,7 @@ function openEdit(p){
   $("e_phone").value = p.phone || "";
   $("e_status").value = p.status || "RDV";
   $("e_comment").value = p.comment || "";
-  $("editInfo").textContent = `Dernière modif : ${p.updatedBy || "-"} • ${p.updatedAt ? "" : ""}`;
+  $("editInfo").textContent = `DerniÃ¨re modif : ${p.updatedBy || "-"} â€¢ ${p.updatedAt ? "" : ""}`;
   $("modal").style.display = "flex";
 }
 
@@ -547,7 +547,7 @@ $("btnSaveEdit").addEventListener("click", async ()=>{
   const comment = norm($("e_comment").value);
 
   if(!name || !phone){
-    alert("Nom et téléphone requis");
+    alert("Nom et tÃ©lÃ©phone requis");
     return;
   }
 
@@ -558,9 +558,10 @@ $("btnSaveEdit").addEventListener("click", async ()=>{
   });
 
   closeEdit();
-  toast("Modifié");
+  toast("ModifiÃ©");
 });
 </script>
 
 </body>
+
 </html>
